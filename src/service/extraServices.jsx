@@ -1,10 +1,24 @@
+import { useNavigate } from "react-router-dom"
 
 
 
-const saveTokenLocalStorage = (data) =>{
-    return  localStorage.setItem('token',data)
+export const setTokenLocalStorage = (data) => {
+    const { _id, token } = data
+    localStorage.setItem('_id', _id)
+    localStorage.setItem('token', token)
+    return
 }
 
-const getTokenForLocalStorage = (data) =>{
+export const getTokenForLocalStorage = (data) => {
     return localStorage.getItem(data)
+}
+
+export const navigateManage = () => {
+    const navigate = useNavigate()
+
+    const getData = localStorage.getItem('_id')
+    navigate(`${getData}/chat`)
+    console.log(getData);
+    if (getData) {
+    }
 }

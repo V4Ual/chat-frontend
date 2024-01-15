@@ -5,12 +5,15 @@ import MessageList from "../components/MessageList";
 import { useSocket } from "../services/SocketProvicer";
 import axios from "axios";
 import { toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { fetchChatMessage, fetchUserFromRoom } from "../services/AxiosServer";
+import { getTokenForLocalStorage } from "../service/extraServices";
+import { useNavigate } from "react-router-dom";
 
 const ChatScreen = () => {
 
   let socket = useSocket()
-
+  const navigate = useNavigate()
 
 
 
@@ -42,13 +45,30 @@ const ChatScreen = () => {
       setMessages(data.data.data);
     }
   };
+
+  const fetchDetails = async () => {
+    const _id = await getTokenForLocalStorage('_id')
+    console.log(_id);
+    if (_id) {
+      const chatMessage = await fetchChatMessage(_id)
+      const fetchUserRoom = await fetchUserFromRoom(_id)
+      console.log(chatMessage, fetchUserRoom);
+      setMessages(chatMessage)
+      setUser(fetchUserRoom)
+
+    } else {
+      navigate('/')
+    }
+  }
+
   useEffect(() => {
     // socket.emit('send:message',"vishla")
-    fetchUser();
-    fetchChat();
+    // fetchUser();
+    // fetchChat();
+    fetchDetails()
   }, []);
 
-  const handleClick = (data) =>{
+  const handleClick = (data) => {
     console.log("data---------", data);
     toast.success('ellfldsflsd')
     setMessages("");
@@ -62,7 +82,7 @@ const ChatScreen = () => {
       <button
         type="button"
         className="text-white absolute justify-center items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        onClick={()=> open == true ? setOpen(false) : setOpen(true)}
+        onClick={() => open == true ? setOpen(false) : setOpen(true)}
         // onClick={useThrottle}
       >
         Default
@@ -108,11 +128,11 @@ const ChatScreen = () => {
             <ul role="list" className="divide-y pt-7 divide-gray-200 dark:divide-gray-700">
               {
                 user && user?.map((uItem, uInedx) => {
-                  return(
-                    <UserProfile 
-                    key={uInedx} 
-                    uItem={uItem}
-                    handleClick={handleClick}
+                  return (
+                    <UserProfile
+                      key={uInedx}
+                      uItem={uItem}
+                      handleClick={handleClick}
                     />
                   )
                 })
@@ -121,8 +141,8 @@ const ChatScreen = () => {
           </div>
         </div>
 
-        <div  className="bg-indigo-400 lg:w-[80%] h-screen flex flex-col justify-end p-4">
-          {messages && < MessageList key={messages.length + 1}  messages={messages} />}
+        <div className="bg-indigo-400 lg:w-[80%] h-screen flex flex-col justify-end p-4">
+          {messages && < MessageList key={messages.length + 1} messages={messages} />}
           <div className="flex mt-4 ">
             <input
               type="text"

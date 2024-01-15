@@ -8,14 +8,14 @@ function App() {
 
   const isLogin = true
 
- 
+
   return (
     <Routes>
+      <Route path="/" element={<Login />} />
       <Route path="/registration" element={<Registration />} />
-      <Route path="/login" element={<Login />} />
-      <Route path='/userID'>
+      <Route path='/:userID'>
 
-        <Route path="chat" element={isLogin ? <ChatScreen /> : <Login />} />
+        <Route path="chat" element={<ChatScreen />} />
 
       </Route>
     </Routes>

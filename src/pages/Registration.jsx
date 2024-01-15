@@ -1,6 +1,6 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { registration } from "../services/AxiosServer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 const Registration = () => {
 
@@ -26,14 +26,23 @@ const Registration = () => {
     const data = await registration(loginData);
     console.log(data.success == true);
     if (data.success == true) {
-      navigator('/')
-      toast.success("Registration Successfullyx");
+      const getID = localStorage.getItem('_id')
+      navigator(`/${getID}/chat`)
+      toast.success("Registration Successfully");
     } else {
       console.log(data);
       toast.error(data.error);
     }
     //  Navigator.to('/')
   };
+
+  useEffect(() => {
+    const getID = localStorage.getItem('_id')
+    console.log(getID);
+    // if (getID) {
+    //   navigator(`/${getID}/chat`)
+    // }
+  }, [])
 
   return (
     <div className="bg-gray-200 h-screen flex items-center justify-center">
@@ -117,7 +126,7 @@ const Registration = () => {
           <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handleSend}>
             Submit
           </button>
-          <Link className="bg-blue-500 text-white px-4 py-2 rounded-md" to="/login">
+          <Link className="bg-blue-500 text-white px-4 py-2 rounded-md" to="/">
             Log in
           </Link>
         </div>
