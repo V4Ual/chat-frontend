@@ -47,9 +47,7 @@ export const loginValidatorCheck = () => {
 
 export const registrationValidatorCheck = () => {
     const registrationValidator = (registrationData = {}) => {
-        console.log(registrationData);
         const { firstName, email, password, phoneNumber, confirmPassword } = registrationData;
-        console.log({ firstName, email, password, phoneNumber, confirmPassword });
         const errors = {};
         if (!firstName) {
             errors.firstName = "plz enter the name firstName";
@@ -82,7 +80,6 @@ export const registrationValidatorCheck = () => {
     const onChangeRegistrationData = (name, value, errorMessage) => {
         const errors = { ...errorMessage };
 
-        console.log(name, value, errorMessage);
         switch (name) {
             case "firstName":
                 if (!value) {

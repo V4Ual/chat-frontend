@@ -1,4 +1,5 @@
 import { loginApi } from "@/services"
+import { handleSetCookie } from "@/utils"
 import { loginValidatorCheck } from "@/validatiors"
 // import { loginValidator, onChangeLoginData } from "@/validatiors"
 import { useRouter } from "next/router"
@@ -17,7 +18,6 @@ export const loginHook = () => {
     const route = useRouter()
 
     const handleLoginChange = (e) => {
-        console.log(e.target.value);
         const { name, value } = e.target || {}
         const error = onChangeLoginData(name, value, errorMessage)
 
@@ -36,11 +36,11 @@ export const loginHook = () => {
 
             const apiResponseLogin = await loginApi(loginData)
             toast.success(apiResponseLogin?.responseMessage)
-            setIsLoading(false)
             route.push('/chat')
+            handleSetCookie("_token", apiResponseLogin?.data?.token)
+            setIsLoading(false)
 
         } catch (error) {
-            console.log({ error });
             toast.error(error?.responseMessage || error?.message || "api site error");
         } finally {
             setIsLoading(false);

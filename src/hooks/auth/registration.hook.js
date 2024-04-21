@@ -1,10 +1,12 @@
 import { registrationApi } from "@/services"
 import { registrationValidatorCheck } from "@/validatiors"
+import { useRouter } from "next/router"
 import { useState } from "react"
 import { toast } from "react-toastify"
 
 export const registrationHook = () => {
 
+    const routes = useRouter()
     const { onChangeRegistrationData, registrationValidator } = registrationValidatorCheck()
     const [registrationData, setRegistrationData] = useState({
         firstName: "",
@@ -33,11 +35,14 @@ export const registrationHook = () => {
                 return
             }
             const responsesData = await registrationApi(registrationData)
+            if (responsesData?.statusCode == 200) {
+                routes.push('/login')
+            }
+
             toast.success(responsesData?.responseMessage)
             setIsLoading(false)
 
         } catch (error) {
-            console.log(error);
             toast.error(error?.responseMessage || error?.errorMessage || 'api site error')
         } finally {
             setIsLoading(false)
