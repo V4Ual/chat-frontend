@@ -1,5 +1,5 @@
 const config = {
-    apiDomain: process.env.API_DOMAIN
+    apiDomain: process.env.NEXT_PUBLIC_API_DOMAIN
 }
 
 export { config }

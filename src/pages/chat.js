@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { Message } from "@/component/Messaage";
+import { userListHook } from "@/hooks/room";
+import { searchHook } from "@/hooks/users/search.hook";
 import EditFilled from "@ant-design/icons/EditFilled";
 import PhoneFilled from "@ant-design/icons/PhoneFilled";
 import VideoCameraFilled from "@ant-design/icons/VideoCameraFilled";
+import MessageFilled from "@ant-design/icons/MessageFilled";
+import CloseSquareFilled from "@ant-design/icons/CloseSquareFilled";
+import SearchOutlined from "@ant-design/icons/SearchOutlined";
+import { useEffect } from "react";
+import { ChatItem } from "react-chat-elements";
 import "react-chat-elements/dist/main.css";
-import Image from "next/image";
+import { SearchUserBox } from "@/component/SearchBoxUser";
 
-import { MessageBox, ChatItem } from "react-chat-elements";
-import { Message } from "@/component/Messaage";
-import { socket } from "@/socket";
-import { userListHook } from "@/hooks/room";
-import { useDispatch, useSelector } from "react-redux";
-import { userData } from "@/redux/userSlice/user.slice";
-import { addMessage, chatData } from "@/redux/userSlice/chatMessage.slice";
-const LoginPage = () => {
+const ChatPage = () => {
     const {
         userList,
         sendMessage,
@@ -24,139 +24,173 @@ const LoginPage = () => {
         image,
         handleMessage,
         setMessage,
+        handleFileChange,
+        thumbnail,
+        inputSearchHandle
     } = userListHook();
+
+    const {
+        inputSearchOnChange,
+        searchList,
+        handleSearch,
+        handleSearchBoxToggle,
+        isShowSearchBox,
+    } = searchHook();
 
     return (
         <>
-            <div className='flex justify-around bg-[#128C7E]'>
-                <div className='w-5 h-screen'>hello</div>
-                <div className='h-screen flex flex-col w-1/5 '>
-                    <div className='flex-grow grow-0'>
-                        <div className='ml-6 flex justify-between w-80'>
+            <div className='flex h-screen'>
+                <div className='w-1/5 bg-red-500'>
+                    <div className='h-32 w-full bg-blue-300'>
+                        <div className='flex justify-between p-3'>
                             <h1 className='text-xl font-bold'>Chats</h1>
-                            <div className='flex justify-end gap-8 mt-2 end-2'>
-                                <EditFilled />
+                            <div className='flex gap-6'>
+                                <SearchOutlined onClick={() => handleSearchBoxToggle()} />
                                 <EditFilled />
                             </div>
                         </div>
-                        <div className='m-3'>
-                            <div className='relative w-full'>
-                                <input
-                                    type='text'
-                                    id='simple-search'
-                                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                                    placeholder='Search branch name...'
-                                    required
-                                />
-                            </div>
+                        <div className='flex justify-center p-3'>
+                            <input
+                                type='text'
+                                id='simple-search'
+                                className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                                placeholder='Search branch name...'
+                                required
+                                onChange={(e) => inputSearchHandle(e)}
+                            />
                         </div>
                     </div>
-                    <div className='flex-grow bg-red-400 overflow-x-auto scroll-smooth p-3 bg-[#128C7E]'>
-                        {userList &&
-                            userList?.map((item, index) => {
-                                return (
-                                    <div
-                                        key={index}
-                                        onClick={() => handleChatList(index)}
-                                        className='m-2 rounded-sm'
-                                    >
-                                        <ChatItem
-                                            avatar={item?.userDetails?.profilePic}
-                                            alt={"Reactjs"}
-                                            title={item?.userDetails?.name}
-                                            subtitle={"What are you doing?"}
-                                            date={new Date()}
-                                            unread={0}
-                                        />
-                                    </div>
-                                );
-                            })}
+                    <div className='h-[calc(100%-129px)]'>
+                        <div className='h-full overflow-auto p-3'>
+                            {userList &&
+                                userList?.map((item, index) => {
+                                    return (
+                                        <div
+                                            key={index}
+                                            onClick={() => handleChatList(index)}
+                                            className='m-2 rounded-sm'
+                                        >
+                                            <ChatItem
+                                                avatar={item?.userDetails?.profilePic}
+                                                alt={"Reactjs"}
+                                                title={item?.userDetails?.name}
+                                                subtitle={"What are you doing?"}
+                                                date={new Date()}
+                                                unread={0}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                        </div>
                     </div>
                 </div>
-                <div className='h-screen flex flex-col flex-grow '>
-                    <div className='flex-grow grow-0 bg-black'>
-                        <div className='justify-around'>
-                            <div className='flex justify-between gap-2 bg-[#34d399]'>
-                                <div className='flex justify-start gap-3 items-center'>
-                                    {chatItemData && (
-                                        <>
-                                            <img
-                                                className='w-14 h-14 rounded-full mx-auto'
-                                                src={chatItemData?.userDetails?.profilePic}
-                                            />
-                                            <h1>{chatItemData?.userDetails?.name}</h1>
-                                        </>
-                                    )}
+
+                {
+                    !chatItemData ? (<> <div className="bg-red-200 w-full relative h-full">
+                        <div className="absolute top-1/2 flex justify-center right-0 left-0  bg-white max-w-full">
+                            <div className="absolute flex flex-col items-center">
+                                <div className="mb-3">
+                                    <MessageFilled className="text-5xl" />
                                 </div>
-                                <div className='flex justify-end gap-8 items-center mr-4'>
-                                    <PhoneFilled />
-                                    <VideoCameraFilled />
+                                <div>
+                                    <h1 className="font-bold text-4xl">Chat With Web</h1>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="flex-grow bg-no-repeat bg-cover overflow-x-auto bg-[url('https://w0.peakpx.com/wallpaper/818/148/HD-wallpaper-whatsapp-background-cool-dark-green-new-theme-whatsapp.jpg')] scroll-snap-y-mandatory">
-                        {chatList?.data?.map((item, index) => {
-                            return (
-                                <Message
-                                    key={index}
-                                    senderId={item.senderId}
-                                    text={item.message}
-                                    image={item?.image}
-                                // onClickDownload={() => handleDownload()}
-                                />
-                            );
-                        })}
-                    </div>
-                    <div className='flex'>
-                        <input
-                            type='search'
-                            id='default-search'
-                            className='block w-full p-4 ps-10 text-sm text-gray-900 border bg-[#34d399] rounded-lg bg-[#34d399] focus:[#34d399] focus:[#34d399] dark:[#34d399] dark:[#34d399] dark:placeholder-[#34d399] dark:text-white dark:focus:[#34d399] dark:focus:[#34d399]'
-                            placeholder='Type here'
-                            required
-                            value={message}
-                            onChange={(e) => handleMessage(e)}
-                        />
-                        <div className='flex'>
-                            <div className='flex items-center space-x-6'>
-                                <div className='shrink-0'>
-                                    <img
-                                        id='preview_img'
-                                        className='h-16 w-16 object-cover rounded-full'
-                                        src={image}
-                                        alt='Current profile photo'
-                                    />
+                    </div></>) : (
+                        <div className='flex w-full flex-col justify-between overflow-hidden bg-blue-500'>
+                            <div className='bg-red-300 p-2'>
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex justify-start gap-3 items-center'>
+                                        {chatItemData && (
+                                            <>
+                                                <img
+                                                        className='w-10 h-10 rounded-full mx-auto'
+                                                        src={chatItemData?.userDetails?.profilePic}
+                                                    />
+                                                    <h1>{chatItemData?.userDetails?.name}</h1>
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className='flex gap-3'>
+                                            <PhoneFilled />
+                                            <VideoCameraFilled />
+                                        </div>
+                                    </div>
                                 </div>
-                                <label className='block'>
-                                    <span className='sr-only'>Choose profile photo</span>
-                                    <input
-                                        type='file'
-                                        onInputCapture={handleImage}
-                                        className='block w-full text-sm text-slate-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-full file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-violet-50 file:text-violet-700
-                                    hover:file:bg-violet-100
-                                    '
-                                    />
-                                </label>
+
+                                <div className='overflow-y-reverse flex-1 overflow-auto p-2'>
+                                    {chatList?.data?.map((item, index) => {
+                                        return (
+                                            <Message
+                                                key={index}
+                                                senderId={item.senderId}
+                                                text={item.message}
+                                                image={item?.image}
+                                            // onClickDownload={() => handleDownload()}
+                                            />
+                                        );
+                                    })}
+                                </div>
+
+                                <div className='bottom-2'>
+                                    <div className='relative'>
+                                        <input
+                                            value={message}
+                                            onChange={(e) => handleMessage(e)}
+                                            placeholder='Type something ...'
+                                            className='h-8 w-full p-2 rounded mb-1'
+                                            type='text'
+                                        />
+                                        <button
+                                            onClick={sendMessage}
+                                            className='text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 absolute right-0 top-1/2 h-full -translate-y-1/2 bg-red-300'
+                                        >
+                                            send
+                                        </button>
+                                        <div className='absolute right-20 top-1'>
+                                            <label
+                                                htmlFor='file-upload'
+                                                className='inline-block cursor-pointer rounded bg-blue-500 font-bold text-white'
+                                            >
+                                                Choose File
+                                            </label>
+                                            <input
+                                                onChange={handleFileChange}
+                                                id='file-upload'
+                                                type='file'
+                                                className='sr-only'
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                {thumbnail && (
+                                    <div className='relative'>
+                                        <div className='absolute bottom-10 right-6 h-fit w-fit bg-green-600 p-3'>
+                                            <img className='h-48' src={thumbnail} />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
-                            <button
-                                onClick={sendMessage}
-                                type='submit'
-                                className='text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-                            >
-                                send
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    )
+                }
+
+
+
+
+
             </div>
+
+            {
+                isShowSearchBox && <div className="w-1/2 h-1/2 top-0 right-0 translate-y-2/4 -translate-x-2/4 bg-red-300 absolute">
+                    <SearchUserBox inputSearchOnChange={inputSearchOnChange} handleSearchBoxToggle={() => handleSearchBoxToggle()} searchList={searchList} isShowSearchBox={() => isShowSearchBox()} />
+                </div>
+            }
+
+
         </>
     );
 };
 
-export default LoginPage;
+export default ChatPage;

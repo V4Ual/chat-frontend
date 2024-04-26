@@ -2,9 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.chat_main_layout {
-    background-color: gray;
-    height: fit-content;
-    
-}

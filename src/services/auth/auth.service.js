@@ -3,7 +3,7 @@ import axiosApi from "../axios"
 
 export const loginApi = async (loginParameter = {}) => {
     try {
-        const responsesData = await axiosApi.post('http://localhost:3001/api/v1/users/login', loginParameter)
+        const responsesData = await axiosApi.post('/users/login', loginParameter)
         return responsesData?.data || {}
     } catch (error) {
         throw error.response?.data
@@ -13,7 +13,7 @@ export const loginApi = async (loginParameter = {}) => {
 
 export const registrationApi = async (registrationParameter = {}) => {
     try {
-        const responsesData = await axiosApi.post('http://localhost:3001/api/v1/users/create', registrationParameter)
+        const responsesData = await axiosApi.post('users/create', registrationParameter)
         return responsesData?.data || {}
     } catch (error) {
         throw error.response?.data
@@ -22,7 +22,7 @@ export const registrationApi = async (registrationParameter = {}) => {
 
 export const getProfileApi = async (registrationParameter = {}) => {
     try {
-        const responsesData = await axiosApi.get('http://localhost:3001/api/v1/users/get-profile', registrationParameter)
+        const responsesData = await axiosApi.get('users/get-profile', registrationParameter)
         return responsesData?.data || {}
     } catch (error) {
         throw error.response?.data

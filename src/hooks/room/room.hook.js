@@ -1,4 +1,5 @@
 import { addMessage, chatData } from "@/redux/userSlice/chatMessage.slice"
+import { userData } from "@/redux/userSlice/user.slice"
 import { userListApi } from "@/services/room"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -11,6 +12,9 @@ export const userListHook = () => {
     const [userList, setUserList] = useState()
     const [chatItemData, setChatItemData] = useState(null);
     const [message, setMessage] = useState()
+    const [thumbnail, setThumbnail] = useState(null);
+    const [inputSearch, setInputSearch] = useState("")
+
 
 
 
@@ -21,7 +25,7 @@ export const userListHook = () => {
 
     useEffect(() => {
         handleResponse()
-    }, [])
+    }, [inputSearch])
 
     useEffect(() => {
         if (chatItemData) {
@@ -30,9 +34,14 @@ export const userListHook = () => {
         }
     }, [chatItemData])
 
+
+    const inputSearchHandle = (e) => {
+        setInputSearch(e.target.value)
+    }
+
     const handleResponse = async () => {
         setIsLoading(true)
-        const responseApi = await userListApi()
+        const responseApi = await userListApi(inputSearch)
         setUserList(responseApi?.data)
         toast.success(responseApi?.responseMessage)
     }
@@ -62,6 +71,19 @@ export const userListHook = () => {
     const sendMessage = () => {
         dispatch(addMessage({ senderId: userId?.data?._id, message: message, image: image }))
         setMessage('')
+        setThumbnail('')
+    };
+
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            setThumbnail(e.target.result);
+        };
+
+        reader.readAsDataURL(file);
     };
 
     return {
@@ -72,6 +94,9 @@ export const userListHook = () => {
         chatItemData,
         message,
         image,
-        handleMessage
+        handleMessage,
+        handleFileChange,
+        thumbnail,
+        inputSearchHandle
     }
 }

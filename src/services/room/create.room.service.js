@@ -1,8 +1,8 @@
 import axiosApi from "../axios"
 
-export const userListApi = async () => {
+export const userListApi = async (search) => {
     try {
-        const responsesData = await axiosApi.get('http://localhost:3001/api/v1/room/user-list')
+        const responsesData = await axiosApi.get(`room/user-list?search=${search}`)
         return responsesData?.data || {}
     } catch (error) {
         throw error.response?.data
@@ -11,7 +11,7 @@ export const userListApi = async () => {
 
 export const chatListing = async (chatId) => {
     try {
-        const responsesData = await axiosApi.get(`http://localhost:3001/api/v1/chat/${chatId}`)
+        const responsesData = await axiosApi.get(`chat/${chatId}`)
         return responsesData?.data || {}
     } catch (error) {
         throw error.response?.data
