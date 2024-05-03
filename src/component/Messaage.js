@@ -1,46 +1,70 @@
 import Image from "next/image";
 import { useSelector } from "react-redux";
 
-const Message = ({ profilePic, image, text, senderId, time, name, onClickDownload }) => {
-    const mainUser = useSelector((state) => state.user)
-    const chatUser = useSelector((state) => state.chat)
+const Message = ({
+    profilePic,
+    image,
+    text,
+    senderId,
+    time,
+    name,
+    onClickDownload,
+}) => {
+    const mainUser = useSelector((state) => state.user);
+    const chatUser = useSelector((state) => state.chat);
 
-    // console.log(mainUser?.data?._id, chatUser);
     return (
-
-        <div className={`flex ${mainUser?.data?._id == senderId ? "justify-end" : 'justify-start'}  gap-2.5 m-2 rounded`}>
-            <div className="flex flex-col gap-1">
-                <div className="flex flex-col w-full max-w-[326px] leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700">
-                    <div className="flex items-center space-x-2 rtl:space-x-reverse mb-2">
-                        {/* <span className="text-sm font-semibold text-gray-900 dark:text-white">Bonnie Green</span> */}
-                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">11:46</span>
-                    </div>
-                    <p className="text-sm font-normal text-gray-900 dark:text-white">{text}</p>
-                    {
-                        image && (
-                            <div className="group relative my-2.5">
-                                <div className="absolute w-full h-full bg-gray-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
-                                    <button data-tooltip-target="download-image" className="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50">
-                                        <svg className="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3" />
-                                        </svg>
-                                    </button>
-                                    <div id="download-image" role="tooltip" className="z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                                        <div className="tooltip-arrow" data-popper-arrow></div>
-                                    </div>
-                                </div>
-                                {image && <Image src={image} width="320" height="480" className="rounded-lg" />}
-                            </div>
-                        )
-                    }
-
-                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400">Delivered</span>
+        <div
+            className='flex'
+            style={{
+                justifyContent: mainUser?.data?._id == senderId ? "end" : "start",
+            }}
+        >
+            {!image && text && (
+                <p
+                    className={`text-wrap m-2 px-6 py-3 ${mainUser?.data?._id == senderId
+                        ? " rounded-l-full"
+                        : "rounded-r-full"
+                        } rounded-t-full bg-gray-800 w-fit lg:max-w-md text-gray-200`}
+                >
+                    {text}
+                </p>
+            )}
+            {image && !text && (
+                <div
+                    className={`m-2 px-6 py-3  bg-gray-800 w-fit lg:max-w-md text-gray-200`}
+                >
+                    {image && (
+                        <Image
+                            src={image}
+                            width={200}
+                            height={300}
+                            accept='image/*'
+                            className='rounded-lg w-[200px] h-[300px]'
+                        />
+                    )}
                 </div>
-            </div>
-
+            )}
+            {image && text && (
+                <div
+                    className={`m-2 px-6 py-3 rounded-lg bg-gray-800 w-fit lg:max-w-md text-gray-200`}
+                >
+                    {image && (
+                        <Image
+                            width={200}
+                            height={300}
+                            src={image}
+                            accept='image/*'
+                            className='rounded-2xl w-[200px] h-[300px]'
+                        />
+                    )}
+                    <p className="m-7"
+                    >
+                        {text}
+                    </p>
+                </div>
+            )}
         </div>
-
-
     );
 };
 
