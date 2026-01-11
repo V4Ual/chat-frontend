@@ -8,52 +8,29 @@ import { login } from "../services/AxiosServer";
 import { MessageCircle, Phone, ArrowRight, Shield, Lock } from "lucide-react";
 import { cn } from "../lib/utils";
 import { ProfileSetupScreen } from "./ProfileScreen";
+import ErrorMessage from "../components/Error";
 
 const LoginScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("+1");
   const [isLoading, setIsLoading] = useState(false);
   const [isPhoneDone, setIsPhoneDone] = useState(false);
+  const [errors, setErrors] = useState();
 
   const handleSubmit = (e) => {
     setIsLoading(true);
     setIsPhoneDone(true);
-    // Simulate verification delay
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    //   // onLogin();
-    // }, 1500);
   };
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
 
-  const navigate = useNavigate();
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleLogin = (e) => {
-    const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
-      [name]: value,
-    });
-    console.log(loginData);
-  };
-
-  const loginSend = async () => {
-    const loginResponses = await login(loginData);
-    console.log("======================>>>>>", loginResponses);
-    if (loginResponses.success == true) {
-      const _id = loginResponses.data._id;
-      const token = loginResponses.data.token;
-      setTokenLocalStorage({ _id: _id, token: token });
-      navigate(`/${_id}/chat`);
+    // allow only digits up to 20
+    if (/^\d{0,20}$/.test(value)) {
+      setPhoneNumber(value);
+      setErrors({ ...errors, phone: "" });
     }
   };
 
-  useEffect(() => {
-    console.log(isPhoneDone, phoneNumber);
-  }, [isPhoneDone, phoneNumber]);
   return !isPhoneDone ? (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
@@ -106,8 +83,12 @@ const LoginScreen = () => {
               <input
                 type="tel"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                maxLength={20}
                 placeholder="Phone number"
+                onChange={(e) => handlePhoneChange(e)}
+                pattern="[0-9]{10}"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                inputmode="numeric"
                 className={cn(
                   "flex-1 px-4 py-3 rounded-lg",
                   "bg-muted text-foreground placeholder:text-muted-foreground",
@@ -117,7 +98,7 @@ const LoginScreen = () => {
                 )}
               />
             </div>
-
+            <ErrorMessage error={errors?.phone} />
             {/* Carrier charges notice */}
             <p className="text-xs text-muted-foreground text-center">
               Carrier charges may apply

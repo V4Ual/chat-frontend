@@ -39,7 +39,14 @@ export const ChatList = ({
       <header className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
         <div className="flex items-center gap-3">
           {data && (
-            <Avatar src={data?.data.profilePic} alt="Your profile" size="sm" />
+            <Avatar
+              src={
+                data?.data?.profilePic ||
+                "https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg?semt=ais_hybrid&w=740&q=80"
+              }
+              alt="Your profile"
+              size="sm"
+            />
           )}
           <h1 className="text-xl font-bold">WhatsApp</h1>
         </div>
@@ -96,7 +103,7 @@ export const ChatList = ({
       {/* Chat list */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {chats && chats.length > 0 ? (
-          chats.map((chat,index) => (
+          chats.map((chat, index) => (
             <ChatListItem
               key={index}
               chat={chat}

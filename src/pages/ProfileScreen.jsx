@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Camera, User, Mail, FileText, ArrowRight, Check } from "lucide-react";
 import { cn } from "../lib/utils";
 import { login, registration } from "../services/AxiosServer";
 import { setTokenLocalStorage } from "../service/extraServices";
 import { useNavigate } from "react-router-dom";
 import { useLoginHook } from "../hooks/Login";
+import ErrorMessage from "../components/Error";
 
 export const ProfileSetupScreen = ({ phoneNumber }) => {
   const {
@@ -15,7 +16,12 @@ export const ProfileSetupScreen = ({ phoneNumber }) => {
     avatar,
     isLoading,
     sendRequest,
+    errorMessage,
   } = useLoginHook(phoneNumber);
+
+  useEffect(() => {
+    console.log({ errorMessage });
+  }, [errorMessage]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -98,8 +104,9 @@ export const ProfileSetupScreen = ({ phoneNumber }) => {
                   "transition-all duration-200"
                 )}
               />
+
               <p className="text-xs text-muted-foreground text-right">
-                {name.length}/25
+                <ErrorMessage error={errorMessage?.name} /> {name.length}/25
               </p>
             </div>
 
@@ -107,7 +114,7 @@ export const ProfileSetupScreen = ({ phoneNumber }) => {
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary" />
-                Email (optional)
+                Email
               </label>
               <input
                 type="email"
@@ -123,6 +130,7 @@ export const ProfileSetupScreen = ({ phoneNumber }) => {
                   "transition-all duration-200"
                 )}
               />
+              <ErrorMessage error={errorMessage?.email} />
             </div>
 
             {/* Description/About Input */}
