@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* WhatsApp Color Theme */
+    --background: 210 10% 96%;
+    --foreground: 210 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 10%;
+
+    /* WhatsApp Teal Green */
+    --primary: 168 76% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    /* WhatsApp Light Green (sent messages) */
+    --secondary: 116 41% 89%;
+    --secondary-foreground: 210 20% 10%;
+
+    /* Muted/subtle backgrounds */
+    --muted: 200 12% 90%;
+    --muted-foreground: 210 10% 45%;
+
+    /* WhatsApp accent */
+    --accent: 142 70% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 200 12% 85%;
+    --input: 200 12% 90%;
+    --ring: 168 76% 36%;
+
+    --radius: 0.75rem;
+
+    /* Custom WhatsApp colors */
+    --whatsapp-dark: 168 76% 26%;
+    --whatsapp-light: 168 76% 42%;
+    --whatsapp-sent: 116 41% 89%;
+    --whatsapp-received: 0 0% 100%;
+    --whatsapp-chat-bg: 36 33% 94%;
+    --whatsapp-online: 142 70% 45%;
+    --whatsapp-typing: 200 12% 70%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 210 20% 10%;
+    --foreground: 210 10% 96%;
+
+    --card: 210 15% 15%;
+    --card-foreground: 210 10% 96%;
+
+    --popover: 210 15% 15%;
+    --popover-foreground: 210 10% 96%;
+
+    --primary: 168 76% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 168 30% 20%;
+    --secondary-foreground: 210 10% 96%;
+
+    --muted: 210 15% 20%;
+    --muted-foreground: 210 10% 60%;
+
+    --accent: 142 70% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 15% 25%;
+    --input: 210 15% 20%;
+    --ring: 168 76% 42%;
+
+    --whatsapp-dark: 168 76% 30%;
+    --whatsapp-light: 168 76% 38%;
+    --whatsapp-sent: 168 30% 25%;
+    --whatsapp-received: 210 15% 20%;
+    --whatsapp-chat-bg: 210 20% 12%;
+    --whatsapp-online: 142 70% 45%;
+    --whatsapp-typing: 210 10% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  /* Message bubble animations */
+  .message-bubble {
+    @apply animate-message-in;
+  }
+
+  /* Chat background pattern */
+  .chat-background {
+    background-color: hsl(var(--whatsapp-chat-bg));
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Typing dots animation */
+  .typing-dot {
+    @apply w-2 h-2 rounded-full bg-muted-foreground;
+    animation: typing-bounce 1.4s infinite ease-in-out both;
+  }
+
+  .typing-dot:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+
+  .typing-dot:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+
+  .typing-dot:nth-child(3) {
+    animation-delay: 0s;
+  }
+
+  /* Online status pulse */
+  .online-pulse {
+    @apply relative;
+  }
+
+  .online-pulse::after {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-accent animate-ping opacity-75;
+  }
+
+  /* Scroll shadows */
+  .scroll-shadow {
+    background: linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 100%);
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+}
